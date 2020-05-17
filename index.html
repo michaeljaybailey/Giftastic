@@ -46,12 +46,36 @@
         .done(function(response){
             console.log(response)
             for(var i=0; i < response.data.length; i++){
+                var image = $("<img>");
+                image.attr("src", response.data[i].images.original_still.url);
+                image.attr("data-still", response.data[i].images.original_still.url);
+                image.attr("data-animate", response.data[i].images.original.url);
+                image.attr("data-state", "still");
+                image.attr("class", "gif");
+                
+
                 $("#gifArea").prepend("<p>Rating: "+ response.data[i].rating+"</p>");
-                $("#gifArea").prepend("<img src='"+ response.data[i].images.downsized.url+"'>");
+                $("#gifArea").prepend(image);
             };
         });
         
     }
+    function imageChangeState() {          
+
+        var state = $(this).attr("data-state");
+        var animateImage = $(this).attr("data-animate");
+        var stillImage = $(this).attr("data-still");
+
+        if(state == "still") {
+            $(this).attr("src", animateImage);
+            $(this).attr("data-state", "animate");
+}
+
+        else if(state == "animate") {
+            $(this).attr("src", stillImage);
+            $(this).attr("data-state", "still");
+}   
+}
 
     function renderButtons() {
         $("#buttons-view").empty();
@@ -87,6 +111,7 @@
 
     });
     $(document).on("click", ".artist", displayArtistGifs);
+    $(document).on("click", ".gif", imageChangeState);
 
     renderButtons();
 
