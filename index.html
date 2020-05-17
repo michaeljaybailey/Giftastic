@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giftastic</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="buttons-view"></div>
+        
+        <form id="artist-form">
+            <label for="artist-input">Add an Artist!</label>
+            <input type="text" id="artist-input"><br>
+
+            <input id="add-artist" type="submit" value="Add an Artist!">
+        </form>
+
+        <div id="gifArea"></div>
+
+
+    </div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var artists = ["Kanye West", "The Beatles", "Frank Ocean", "MF DOOM"];
+
+    function displayArtistGifs() {
+        var gif = $(this).attr("search");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + gif +"&api_key=dIPV3VFYt2Sb4mRaLDOTToQ76aM5SlnQ";
+
+        $.ajax({url:queryURL, method: 'GET'})
+        .done(function(response){
+            console.log(response)
+            for(var i=0; i < response.data.length; i++){
+                $("#gifArea").prepend("<p>Rating: "+ response.data[i].rating+"</p>");
+                $("#gifArea").prepend("<img src='"+ response.data[i].images.downsized.url+"'>");
+            };
+        });
+        
+    }
+
+    function renderButtons() {
+        $("#buttons-view").empty();
+
+        for (var i = 0; i < artists.length; i++) {
+            var a = $("<button>");
+
+            a.addClass("artist");
+
+            a.attr("search", artists[i]);
+
+            a.text(artists[i]);
+
+            $("#buttons-view").append(a);         
+     }
+    }
+    
+    
+    
+    
+    $('#add-artist').on('click',function(event){
+        event.preventDefault();
+
+        var artist = $("#artist-input").val().trim();
+
+        artists.push(artist);
+        console.log(artists);
+
+        renderButtons();
+        
+
+    });
+    $(document).on("click", ".artist", displayArtistGifs);
+
+    renderButtons();
+
+
+    
+
+
+
+
+
+</script>
+
+
+</body>
+</html>
